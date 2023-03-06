@@ -1,0 +1,52 @@
+.cls_1 {
+  fill: none;
+  stroke: white;
+  stroke-width: 1;
+}
+
+.cls_2 {
+  fill: #f8b62d;
+  stroke: white;
+  stroke-width: 1;
+}
+
+.cls_3,
+.cls_4 {
+  fill: #fabe00;
+  stroke: white;
+  stroke-width: 1;
+}
+
+.cls_5 {
+  fill: #fff;
+  display: none;
+  stroke: white;
+  stroke-width: 1;
+}
+
+.cls_6,
+.cls_7 {
+  fill: #e83828;
+  stroke: white;
+  stroke-width: 1;
+}
+
+.cls_7,
+.cls_4 {
+  mix-blend-mode: multiply;
+  stroke: white;
+  stroke-width: 1;
+}
+
+.cls_8 {
+  isolation: isolate;
+  stroke: white;
+  stroke-width: 1;
+}
+
+.cls_9 {
+  fill: #980014;
+  opacity: 0.4;
+  stroke: white;
+  stroke-width: 1;
+}
