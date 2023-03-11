@@ -1,9 +1,10 @@
-import { motion } from 'framer-motion'
-import React from 'react'
+import { motion, useAnimation, useScroll } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
 import { Link, useMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import "../Styles/Starcoexsvg.css"
-const Nav = styled.nav`
+import Account from './Account'
+const Nav = styled(motion.nav)`
 display:flex;
 justify-content:space-between;
 align-items:center;
@@ -19,6 +20,7 @@ box-sizing:border-box;
 const Col = styled.div`
 display:flex;
 align-items:center;
+/* width:100%; */
 `
 const Logo = styled(motion.svg)`
 margin-right:50px;
@@ -36,7 +38,7 @@ const Items = styled.ul`
 
 
 `
-const Item = styled.li`
+const Item = styled(motion.li)`
 margin-right:20px;
 position:relative;
 display:flex;
@@ -51,7 +53,26 @@ font-size:12px;
   color:${props => props.theme.white.lighter};
 }
 `
-const Circle = styled.span`
+const Search = styled.span`
+position:relative;
+color:white;
+display:flex;
+
+/* justify-content:space-between; */
+align-items:center;
+    /* align-items: center;
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+    justify-content: flex-end;
+    position: absolute;
+    right: 4%;
+    top: 0; */
+svg{
+  height:25px;
+}
+`
+const Circle = styled(motion.span)`
 width:5px;
 height:5px;
 border-radius:5px;
@@ -62,12 +83,7 @@ left:0;
 right:0;
 margin: 0 auto;
 `
-const Search = styled.span`
-color:white;
-svg{
-  height:25px;
-}
-`
+
 
 const Notify = styled.span`
 color:white;
@@ -75,6 +91,29 @@ svg{
   height:25px;
 }
 `
+const Input = styled(motion.input)`
+transform-origin: right center;
+position:absolute;
+/* left:-180px; */
+right:65px;
+z-index:-1;
+background-color:transparent;
+color:white;
+border:1px solid ${props => props.theme.white.lighter};
+/* border-radius:5px; */
+padding-left:40px;
+padding:5px 10px;
+font-size:16px;
+&::placeholder{
+  text-align:center;
+  color:white;
+  font-size: 12px
+  
+}
+/* padding: 0 10px;
+margin: 0 10px; */
+`
+
 // const logoVariants = {
 //   initial: {
 //     pathLength: 0,
@@ -98,15 +137,57 @@ const logoVariants = {
   },
 };
 export default function Header() {
+  const [searchOpen, setSearchOpen] = useState(false)
   const homeMath = useMatch("/")
   const seriesMath = useMatch("/series")
   const moviesMath = useMatch("/movies")
   const latestMath = useMatch("/latest")
   const myListMath = useMatch("/my-list")
   const originalAudioMath = useMatch("/original-audio")
+  const inputAnimation = useAnimation()
+  const navAnimation = useAnimation()
+  const { scrollY } = useScroll()
 
+  useEffect(() => {
+    scrollY.onChange(() => {
+      if (scrollY.get() > 80) {
+        navAnimation.start({
+          backgroundColor: "rgba(0,0,0,1)"
+        })
+      } else {
+        navAnimation.start({
+          backgroundColor: "rgba(0,0,0,0)"
+        });
+      }
+    })
+  }, [scrollY, navAnimation])
+  // useEffect(() => {
+  //   scrollY.onChange(() => {
+  //     console.log(scrollY)
+  //     if (scrollY.get() > 80) {
+  //       navAnimation.start("scroll");
+  //     } else {
+  //       navAnimation.start("top");
+  //     }
+  //   });
+  // }, [scrollY, navAnimation]);
+
+  const toggleSearch = () => {
+
+    // setSearchOpen(true)
+    if (searchOpen) {
+      inputAnimation.start({
+        scaleX: 0,
+      })
+    } else {
+      inputAnimation.start({
+        scaleX: 1
+      })
+    }
+    setSearchOpen((prev) => !prev)
+  }
   return (
-    <Nav>
+    <Nav initial={{ backgroundColor: "rgba(0,0,0,1)" }} animate={navAnimation}>
       <Col>
         <Logo
           variants={logoVariants}
@@ -139,17 +220,30 @@ export default function Header() {
           <motion.path className="cls-6" d="M289.62,23.68c-4.19,0-7.55-3.37-7.55-7.55s3.37-7.57,7.55-7.57,7.55,3.4,7.55,7.57-3.38,7.55-7.55,7.55Zm0-14.09c-3.56,0-6.49,2.93-6.49,6.54s2.93,6.52,6.49,6.52,6.49-2.93,6.49-6.52-2.93-6.54-6.49-6.54Zm-2.81,1.67c.63-.12,1.57-.21,2.41-.21,1.34,0,2.18,.24,2.79,.8,.49,.44,.75,1.08,.75,1.85,0,1.24-.77,2.08-1.73,2.49,.7,.3,1.12,1.01,1.33,1.97,.31,1.34,.54,2.28,.77,2.69h-1.29c-.16-.3-.38-1.12-.66-2.34-.24-1.33-.77-1.85-1.92-1.88h-1.19v4.22h-1.26V11.26Zm1.26,4.43h1.27c1.31,0,2.18-.75,2.18-1.85,0-1.27-.92-1.78-2.25-1.78-.57,0-.96,.02-1.2,.09v3.54Z" />
         </Logo>
         <Items>
-          <Item><Link to="/">홈{homeMath && <Circle />}</Link></Item>
-          <Item><Link to="/series">시리즈{seriesMath && <Circle />}</Link></Item>
-          <Item><Link to="/movies">영화{moviesMath && <Circle />}</Link></Item>
+          <Item whileHover={{
+            y: -5,
+            scale: 1,
+            rotate: 0,
+            // transition: {
+            //   duration: 2
+            // }
+          }}><Link to="/">홈{homeMath && <Circle layoutId='circle' />}</Link></Item>
+          <Item whileHover={{
+            y: -5,
+            scale: 1,
+            rotate: 0,
+          }} ><Link to="/series">시리즈{seriesMath && <Circle layoutId='circle' />}</Link></Item>
+          <Item><Link to="/movies">영화{moviesMath && <Circle layoutId='circle' />}</Link></Item>
           <Item><Link to="/latest">NEW! 요즘 대세 콘텐츠{latestMath && <Circle />}</Link></Item>
           <Item><Link to="/my-list">내가 찜한 콘텐츠{myListMath && <Circle />}</Link></Item>
           <Item><Link to="/original-audio">언어별로 찾아보기{originalAudioMath && <Circle />}</Link></Item>
         </Items>
       </Col >
       <Col>
-        <Search>
-          <svg
+        <Search >
+          <motion.svg onClick={toggleSearch}
+            animate={{ x: searchOpen ? -185 : 0 }}
+            transition={{ type: "linear" }}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -159,16 +253,23 @@ export default function Header() {
               d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
               clipRule="evenodd"
             ></motion.path>
-          </svg>
+          </motion.svg>
+          <Input
+            transition={{ type: "linear" }}
+            // animate={{ scaleX: searchOpen ? 1 : 0 }}
+            animate={inputAnimation}
+            initial={{ scaleX: 0 }}
+            placeholder="제목, 사람, 장르" />
+          <h1>키즈</h1>
+          <Notify>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <motion.path fillRule="evenodd" clipRule="evenodd" d="M13 4.07092C16.3922 4.55624 18.9998 7.4736 18.9998 11V15.2538C20.0486 15.3307 21.0848 15.4245 22.107 15.5347L21.8926 17.5232C18.7219 17.1813 15.409 17 11.9998 17C8.59056 17 5.27764 17.1813 2.10699 17.5232L1.89258 15.5347C2.91473 15.4245 3.95095 15.3307 4.99978 15.2538V11C4.99978 7.47345 7.6076 4.55599 11 4.07086V2L13 2V4.07092ZM16.9998 15.1287V11C16.9998 8.23858 14.7612 6 11.9998 6C9.23836 6 6.99978 8.23858 6.99978 11V15.1287C8.64041 15.0437 10.3089 15 11.9998 15C13.6907 15 15.3591 15.0437 16.9998 15.1287ZM8.62568 19.3712C8.6621 20.5173 10.1509 22 11.9993 22C13.8477 22 15.3365 20.5173 15.373 19.3712C15.38 19.1489 15.1756 19 14.9531 19H9.04555C8.82308 19 8.61862 19.1489 8.62568 19.3712Z" fill="currentColor">
+              </motion.path>
+            </svg>
+          </Notify>
+          {/* <Account /> */}
         </Search>
-        <h1>키즈</h1>
-        <Notify>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <motion.path fillRule="evenodd" clipRule="evenodd" d="M13 4.07092C16.3922 4.55624 18.9998 7.4736 18.9998 11V15.2538C20.0486 15.3307 21.0848 15.4245 22.107 15.5347L21.8926 17.5232C18.7219 17.1813 15.409 17 11.9998 17C8.59056 17 5.27764 17.1813 2.10699 17.5232L1.89258 15.5347C2.91473 15.4245 3.95095 15.3307 4.99978 15.2538V11C4.99978 7.47345 7.6076 4.55599 11 4.07086V2L13 2V4.07092ZM16.9998 15.1287V11C16.9998 8.23858 14.7612 6 11.9998 6C9.23836 6 6.99978 8.23858 6.99978 11V15.1287C8.64041 15.0437 10.3089 15 11.9998 15C13.6907 15 15.3591 15.0437 16.9998 15.1287ZM8.62568 19.3712C8.6621 20.5173 10.1509 22 11.9993 22C13.8477 22 15.3365 20.5173 15.373 19.3712C15.38 19.1489 15.1756 19 14.9531 19H9.04555C8.82308 19 8.61862 19.1489 8.62568 19.3712Z" fill="currentColor">
-            </motion.path>
-          </svg>
-        </Notify>
       </Col>
-    </Nav>
+    </Nav >
   )
 }

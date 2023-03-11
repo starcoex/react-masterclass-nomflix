@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import styles from "../styles/Svgstyles.module.css"
+
 
 const Svg = styled.svg`
   width: 200px;

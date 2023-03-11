@@ -32,6 +32,9 @@ footer, header, hgroup, main, menu, nav, section {
 }
 body {
   line-height: 1;
+  color:${(props) => props.theme.white.darker};
+  /* background-color:${(props) => props.theme.black}; */
+  background-color:black;
 }
 menu, ol, ul, li {
   list-style: none;
