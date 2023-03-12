@@ -1,6 +1,8 @@
 import { motion, useAnimation, useScroll } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
-import { Link, useMatch } from 'react-router-dom'
+import { useQuery } from 'react-query'
+import { Link, useMatch, useNavigate } from 'react-router-dom'
+import { useForm } from "react-hook-form"
 import styled from 'styled-components'
 import "../Styles/Starcoexsvg.css"
 import Account from './Account'
@@ -53,7 +55,7 @@ font-size:12px;
   color:${props => props.theme.white.lighter};
 }
 `
-const Search = styled.span`
+const Search = styled.form`
 position:relative;
 color:white;
 display:flex;
@@ -136,6 +138,9 @@ const logoVariants = {
     },
   },
 };
+interface IFrom {
+  keyword: string;
+}
 export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const homeMath = useMatch("/")
@@ -147,6 +152,11 @@ export default function Header() {
   const inputAnimation = useAnimation()
   const navAnimation = useAnimation()
   const { scrollY } = useScroll()
+  const navigate = useNavigate()
+  const { register, handleSubmit } = useForm<IFrom>()
+  const onVaild = (data: IFrom) => {
+    navigate(`/search?keyword=${data.keyword}`)
+  }
 
   useEffect(() => {
     scrollY.onChange(() => {
@@ -240,7 +250,7 @@ export default function Header() {
         </Items>
       </Col >
       <Col>
-        <Search >
+        <Search onSubmit={handleSubmit(onVaild)}>
           <motion.svg onClick={toggleSearch}
             animate={{ x: searchOpen ? -185 : 0 }}
             transition={{ type: "linear" }}
@@ -255,6 +265,7 @@ export default function Header() {
             ></motion.path>
           </motion.svg>
           <Input
+            {...register("keyword", { required: true, minLength: 1 })}
             transition={{ type: "linear" }}
             // animate={{ scaleX: searchOpen ? 1 : 0 }}
             animate={inputAnimation}

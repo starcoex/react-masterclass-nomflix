@@ -30,12 +30,6 @@ footer, header, hgroup, main, menu, nav, section {
 *[hidden] {
     display: none;
 }
-body {
-  line-height: 1;
-  color:${(props) => props.theme.white.darker};
-  /* background-color:${(props) => props.theme.black}; */
-  background-color:black;
-}
 menu, ol, ul, li {
   list-style: none;
 }
@@ -57,8 +51,11 @@ table {
 body {
   font-weight: 300;
   font-family: 'Source Sans Pro', sans-serif;
-  color:black;
+  color:${(props) => props.theme.white.darker};
+  /* background-color:${(props) => props.theme.black}; */
+  background-color:black;
   line-height: 1.2;
+  overflow-x: hidden;
 }
 a {
   text-decoration:none;
